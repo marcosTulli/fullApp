@@ -8,13 +8,15 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(morgan('tiny'));
-app.use(express.static(path.join(__dirname, '/public')));
+// app.use(express.static(path.join(__dirname, '/public')));
+
+app.set('views', './src/views');
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  res.send('Hello From my app');
+  res.render('index', { title: 'Welcome to Globomantics', data: ['a', 'b', 'c'] });
 });
 
-//Comment
 app.listen(PORT, () => {
   debug(`Listening on PORT ${chalk.green(PORT)} `);
 });
