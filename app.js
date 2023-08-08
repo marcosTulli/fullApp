@@ -8,7 +8,6 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(morgan('tiny'));
-// app.use(express.static(path.join(__dirname, '/public')));
 
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
