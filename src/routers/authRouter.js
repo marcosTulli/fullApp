@@ -1,5 +1,6 @@
 const express = require('express');
 const debug = require('debug')('app:sessionsRouter');
+const passport = require('passport');
 const { MongoClient, ObjectId } = require('mongodb');
 
 const authRouter = express.Router();
@@ -9,15 +10,15 @@ authRouter.route('/signUp').post((req, res) => {
   const url = 'mongodb+srv://marcosTulli:tuki@cluster0.hkb8byd.mongodb.net/?retryWrites=true&w=majority';
   const dbName = 'globomantics';
 
-  (async function addUser() {
+  (async function tuki() {
     let client;
     try {
       client = await MongoClient.connect(url);
       const db = client.db(dbName);
       const user = { username, password };
-      const results = await db.collection('users').insertOne(user);
-      console.log(results);
-      req.login(results.insertedId, () => {
+      results = await db.collection('users').insertOne(user);
+      debug(results);
+      req.login(results.inserteId, () => {
         res.redirect('/auth/profile');
       });
     } catch (error) {
@@ -25,11 +26,19 @@ authRouter.route('/signUp').post((req, res) => {
     }
     client.close();
   })();
-
-  req.login(req.body, () => {
-    res.redirect('/auth/profile');
-  });
 });
+
+authRouter
+  .route('/signIn')
+  .get((req, res) => {
+    res.render('signin');
+  })
+  .post(
+    passport.authenticate('local', {
+      succesRedirect: '/auth/profile/',
+      failure: '/',
+    })
+  );
 
 authRouter.route('/profile').get((req, res) => {
   res.json(req.user);

@@ -2,7 +2,6 @@ const express = require('express');
 const chalk = require('chalk');
 const debug = require('debug')('app:sessionsRouter');
 const { MongoClient, ObjectId } = require('mongodb');
-// const sessions = require('../data/sessions.json');
 
 const sessionRouter = express.Router();
 
