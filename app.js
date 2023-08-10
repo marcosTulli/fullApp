@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const debug = require('debug')('app');
 const morgan = require('morgan');
 const path = require('path');
-const passport = requrie('passport');
+const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
@@ -18,7 +18,13 @@ app.use(express.static(path.join(__dirname, './public/')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({ secret: 'globomantics' }));
+app.use(
+  session({
+    secret: 'globomantics',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 require('./src/config/passport.js')(app);
 
