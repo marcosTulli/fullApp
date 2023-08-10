@@ -2,20 +2,19 @@ const express = require('express');
 const debug = require('debug')('app:authRouter');
 const { MongoClient, ObjectID } = require('mongodb');
 const passport = require('passport');
+const { MONGO_URL, DB_NAME } = require('../config/variables');
 
 const authRouter = express.Router();
 
 authRouter.route('/signUp').post((req, res) => {
   const { username, password } = req.body;
-  const url = 'mongodb+srv://marcosTulli:tuki@cluster0.hkb8byd.mongodb.net/?retryWrites=true&w=majority';
-  const dbName = 'globomantics';
-
   (async function addUser() {
     let client;
     try {
-      client = await MongoClient.connect(url);
+      console.log(variables.MONGO_URL);
+      client = await MongoClient.connect(MONGO_URL);
 
-      const db = client.db(dbName);
+      const db = client.db(DB_NAME);
       const user = { username, password };
       const results = await db.collection('users').insertOne(user);
       debug(results);
