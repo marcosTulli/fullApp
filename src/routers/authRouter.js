@@ -1,7 +1,7 @@
 const express = require('express');
-const debug = require('debug')('app:sessionsRouter');
+const debug = require('debug')('app:authRouter');
+const { MongoClient, ObjectID } = require('mongodb');
 const passport = require('passport');
-const { MongoClient, ObjectId } = require('mongodb');
 
 const authRouter = express.Router();
 
@@ -10,15 +10,16 @@ authRouter.route('/signUp').post((req, res) => {
   const url = 'mongodb+srv://marcosTulli:tuki@cluster0.hkb8byd.mongodb.net/?retryWrites=true&w=majority';
   const dbName = 'globomantics';
 
-  (async function tuki() {
+  (async function addUser() {
     let client;
     try {
       client = await MongoClient.connect(url);
+
       const db = client.db(dbName);
       const user = { username, password };
-      results = await db.collection('users').insertOne(user);
+      const results = await db.collection('users').insertOne(user);
       debug(results);
-      req.login(results.inserteId, () => {
+      req.login(results.insertedId, () => {
         res.redirect('/auth/profile');
       });
     } catch (error) {
@@ -35,11 +36,10 @@ authRouter
   })
   .post(
     passport.authenticate('local', {
-      succesRedirect: '/auth/profile/',
-      failure: '/',
+      successRedirect: '/auth/profile',
+      failureRedirect: '/',
     })
   );
-
 authRouter.route('/profile').get((req, res) => {
   res.json(req.user);
 });
