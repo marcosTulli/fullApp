@@ -3,6 +3,7 @@ const chalk = require('chalk');
 const debug = require('debug')('app:sessionsRouter');
 const { MongoClient, ObjectId } = require('mongodb');
 const { MONGO_URL, DB_NAME } = require('../config/variables');
+const speakerService = require('../services/speakerService');
 
 const sessionRouter = express.Router();
 
@@ -40,6 +41,9 @@ sessionRouter.route('/:id').get((req, res) => {
 
       const db = client.db(DB_NAME);
       const session = await db.collection('sessions').findOne({ _id: new ObjectId(id) });
+      const speaker = await speakerService.getSpeakerById(session.speakers[0].id);
+      console.log(speaker.data);
+      session.speaker = speaker.data;
       res.render('session', { session });
     } catch (error) {
       debug(error.stack);
